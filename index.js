@@ -83,6 +83,7 @@ var Typer = {
   },
 };
 
+/*
 function replaceUrls(text) {
   var http = text.indexOf('http://');
   var space = text.indexOf('.me ', http);
@@ -94,6 +95,7 @@ function replaceUrls(text) {
     return text;
   }
 }
+*/
 
 Typer.speed = 3;
 Typer.file = 'david4theworld.html';
