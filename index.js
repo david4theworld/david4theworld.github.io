@@ -1,18 +1,16 @@
+const cv = "https://drive.google.com/uc?export=download&id=1gsegZFas_Hh_-9jXyvGN0GrexANuvMg-";
+const li = "https://www.linkedin.com/in/balabandavid/";
+const github = "https://github.com/david4theworld";
+const mail = "mailto:david4theworld@gmail.com";
+
 var Typer = {
   text: '',
-  accessCountimer: null,
   index: 0,
-  speed: 1,
+  speed: 0,
   file: '',
-  accessCount: 0,
-  deniedCount: 0,
   init: function () {
-    accessCountimer = setInterval(function () {
-      Typer.updLstChr();
-    }, 500);
     $.get(Typer.file, function (data) {
-      Typer.text = data;
-      Typer.text = Typer.text.slice(0, Typer.text.length - 1);
+      Typer.text = data.slice(0, data.length - 1);
     });
   },
 
@@ -20,92 +18,46 @@ var Typer = {
     return $('#console').html();
   },
 
-  write: function (str) {
-    $('#console').append(str);
-    return false;
-  },
-
   addText: function (key) {
-    if (key.keyCode == 18) {
-      Typer.accessCount++;
-
-      if (Typer.accessCount >= 3) {
-        Typer.makeAccess();
-      }
-    } else if (key.keyCode == 20) {
-      Typer.deniedCount++;
-
-      if (Typer.deniedCount >= 3) {
-        Typer.makeDenied();
-      }
-    } else if (key.keyCode == 27) {
-      Typer.hidepop();
-    } else if (Typer.text) {
       var cont = Typer.content();
-      if (cont.substring(cont.length - 1, cont.length) == '|')
-        $('#console').html(
-          $('#console')
-            .html()
-            .substring(0, cont.length - 1),
-        );
-      if (key.keyCode != 8) {
-        Typer.index += Typer.speed;
-      } else {
-        if (Typer.index > 0) Typer.index -= Typer.speed;
-      }
+      if (cont[cont.length - 1] == '|')
+        $('#console').html(cont.slice(0, -1));
+
+      Typer.index += Typer.speed;
+
       var text = Typer.text.substring(0, Typer.index);
       var rtn = new RegExp('\n', 'g');
 
       $('#console').html(text.replace(rtn, '<br/>'));
       window.scrollBy(0, 50);
-    }
-
-    if (key.preventDefault && key.keyCode != 122) {
-      key.preventDefault();
-    }
-
-    if (key.keyCode != 122) {
-      // otherway prevent keys default behavior
-      key.returnValue = false;
-    }
   },
 
   updLstChr: function () {
     var cont = this.content();
 
-    if (cont.substring(cont.length - 1, cont.length) == '|')
-      $('#console').html(
-        $('#console')
-          .html()
-          .substring(0, cont.length - 1),
-      );
-    else this.write('|'); // else write it
+    if (cont[cont.length - 1] == '|')
+      $('#console').html(cont.slice(0, -1));
+    else  $('#console').append('|'); 
   },
 };
-
-/*
-function replaceUrls(text) {
-  var http = text.indexOf('http://');
-  var space = text.indexOf('.me ', http);
-
-  if (space != -1) {
-    var url = text.slice(http, space - 1);
-    return text.replace(url, '<a href="' + url + '">' + url + '</a>');
-  } else {
-    return text;
-  }
-}
-*/
 
 Typer.speed = 2;
 Typer.file = 'david4theworld.html';
 Typer.init();
 
 var timer = setInterval('t();', 30);
+var tim = setInterval(function () {
+  Typer.updLstChr();
+}, 500);
+
 function t() {
-  Typer.addText({ keyCode: 123748 });
+  Typer.addText();
 
   if (Typer.index > Typer.text.length) {
     clearInterval(timer);
+    document.getElementById('cv').href = cv;
+    document.getElementById('li').href = li;
+    document.getElementById('github').href = github;
+    document.getElementById('mail').href = mail;
   }
 }
